@@ -3,7 +3,8 @@ int simonLeds[100];
 int randomLed;
 int leds[4] = { 2, 3, 4, 5 };
 int buttons[4] = { 6, 7, 8, 9 };
-int tones[4] = { 100, 101, 102, 103 };
+int tones[4] = { 440, 523, 659, 784 };
+int buzzerPin = 10;
 
 int currentScore = 0;
 int highscore = 0;
@@ -18,6 +19,7 @@ int noInputCounter = 0;
 
 void setup() {
   Serial.begin(9600);
+  pinMode(buzzerPin, OUTPUT);
 
   for (int i = 0; i < 4; i++) {
     pinMode(leds[i], OUTPUT);
@@ -70,8 +72,10 @@ void loopSimonSelections() {
     Serial.print(", ");
 
     digitalWrite(leds[simonLeds[i]], HIGH);
+    tone(buzzerPin, tones[simonLeds[i]]);
     delay(sequenceDelay);
     digitalWrite(leds[simonLeds[i]], LOW);
+    noTone(buzzerPin);
     delay(sequenceDelay);
   }
   Serial.println("\n");
