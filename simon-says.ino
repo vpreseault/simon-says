@@ -55,14 +55,9 @@ void loop() {
 
 void waitForNoInput() {
   Serial.println("waitForNoInput \n");
-  bool noInput;
-  while (!noInput) {
-    noInput = true;
+  while (arraySum(buttonsInput, 4) != 4) {
     for (int j = 0; j < 4; j++) {
       buttonsInput[j] = digitalRead(buttons[j]);
-      if (buttonsInput[j] == 0) {
-        noInput = false;
-      }
     }
   }
 }
@@ -98,11 +93,14 @@ void userInput() {
         buttonsInput[j] = digitalRead(buttons[j]);
         if (buttonsInput[j] == 0) {
           currentInput = j;
+          digitalWrite(leds[j], HIGH);
+          Serial.println(tones[j]);
         } else {
           noInputCounter++;
+          digitalWrite(leds[j], LOW);
+          
         }
       }
-
       // if no buttons are pressed reset input variables
       if (noInputCounter == 4) {
         currentInput = -1;
@@ -118,14 +116,13 @@ void userInput() {
     }
     previousInput = currentInput;
   }
+  waitForNoInput();
+  resetOutputs();
   roundWin();
 }
 
 void lost() {
   Serial.println("lost \n");
-  if (currentScore > highscore) {
-    highscore = currentScore;
-  }
   currentScore = 0;
   currentInput = -1;
   previousInput = -1;
@@ -134,6 +131,7 @@ void lost() {
 }
 
 void losingAnimation() {
+  Serial.println("losingAnimation \n");
   delay(sequenceDelay);
   for (int i = 0; i < 4; i++) {
     digitalWrite(leds[i], HIGH);
@@ -148,12 +146,34 @@ void losingAnimation() {
 void roundWin() {
   Serial.println("roundWin \n");
   currentScore++;
+
+  if (currentScore > highscore) {
+    highscore = currentScore;
+  }
+
   updateLCDScores();
 }
 
 void updateLCDScores() {
+  Serial.println("updateLCDScores \n");
   lcd.setCursor(0, 0);
   lcd.print("Score: " + String(currentScore));
   lcd.setCursor(0, 1);
   lcd.print("Best: " + String(highscore));
+}
+
+void resetOutputs() {
+  Serial.println("resetOutputs \n");
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(leds[i], LOW);
+  }
+  noTone(buzzerPin);
+}
+
+int arraySum(int array[], int length) {
+  int sum = 0;
+  for (int i = 0; i < length; i++) {
+    sum += array[i];
+  }
+  return sum;
 }
