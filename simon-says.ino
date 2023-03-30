@@ -142,6 +142,7 @@ void roundWin() {
 
 void updateLCDScores() {
   Serial.println("updateLCDScores \n");
+  lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Score: " + String(currentScore));
   lcd.setCursor(0, 1);
