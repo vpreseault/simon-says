@@ -1,3 +1,7 @@
+#include <LiquidCrystal.h>
+const int rs = 6, en = 7, d4 = 8, d5 = 9, d6 = 10, d7 = 11;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
 int simonLeds[100];
 
 int randomLed;
@@ -19,6 +23,7 @@ int noInputCounter = 0;
 
 void setup() {
   Serial.begin(9600);
+  lcd.begin(16, 2);
   pinMode(buzzerPin, OUTPUT);
 
   for (int i = 0; i < 4; i++) {
@@ -29,6 +34,9 @@ void setup() {
 }
 
 void loop() {
+  // reset LCD
+  updateLCDScores();
+
   // wait until no buttons are being pressed
   waitForNoInput();
 
@@ -121,7 +129,7 @@ void lost() {
   currentScore = 0;
   currentInput = -1;
   previousInput = -1;
-
+  
   losingAnimation();
 }
 
@@ -140,4 +148,12 @@ void losingAnimation() {
 void roundWin() {
   Serial.println("roundWin \n");
   currentScore++;
+  updateLCDScores();
+}
+
+void updateLCDScores() {
+  lcd.setCursor(0, 0);
+  lcd.print("Score: " + String(currentScore));
+  lcd.setCursor(0, 1);
+  lcd.print("Best: " + String(highscore));
 }
