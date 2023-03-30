@@ -16,8 +16,6 @@ int highscore = 0;
 int roundDelay = 1000;
 int sequenceDelay = 250;
 
-int currentInput = -1;
-int previousInput = -1;
 int buttonsInput[4] = { 0, 0, 0, 0 };
 int noInputCounter = 0;
 
@@ -53,6 +51,33 @@ void loop() {
   delay(roundDelay);
 }
 
+void userInput() {
+  Serial.println("userInput \n");
+  for (int i = 0; i <= currentScore; i++) {
+    while (arraySum(buttonsInput, 4) == 4) {
+      // loop through all buttons and check if they are pressed
+      for (int j = 0; j < 4; j++) {
+        buttonsInput[j] = digitalRead(buttons[j]);
+        if (buttonsInput[j] == 0) {
+          digitalWrite(leds[j], HIGH);
+          tone(buzzerPin, tones[j]);
+
+          // verify user input if button[j] is pressed
+          if (j != simonLeds[i]) {
+            waitForNoInput();
+            resetOutputs();
+            lost();
+            return;
+          }
+        }
+      }
+    }
+    waitForNoInput();
+    resetOutputs();
+  }
+  roundWin();
+}
+
 void waitForNoInput() {
   Serial.println("waitForNoInput \n");
   while (arraySum(buttonsInput, 4) != 4) {
@@ -84,48 +109,9 @@ void loopSimonSelections() {
   Serial.println("\n");
 }
 
-void userInput() {
-  Serial.println("userInput \n");
-  for (int i = 0; i <= currentScore; i++) {
-    while (currentInput == -1 || currentInput == previousInput) {
-      // loop through all buttons and check if they are pressed
-      for (int j = 0; j < 4; j++) {
-        buttonsInput[j] = digitalRead(buttons[j]);
-        if (buttonsInput[j] == 0) {
-          currentInput = j;
-          digitalWrite(leds[j], HIGH);
-          Serial.println(tones[j]);
-        } else {
-          noInputCounter++;
-          digitalWrite(leds[j], LOW);
-          
-        }
-      }
-      // if no buttons are pressed reset input variables
-      if (noInputCounter == 4) {
-        currentInput = -1;
-        previousInput = -1;
-      }
-      noInputCounter = 0;
-    }
-
-    // verify user input
-    if (currentInput != simonLeds[i]) {
-      lost();
-      return;
-    }
-    previousInput = currentInput;
-  }
-  waitForNoInput();
-  resetOutputs();
-  roundWin();
-}
-
 void lost() {
   Serial.println("lost \n");
   currentScore = 0;
-  currentInput = -1;
-  previousInput = -1;
   
   losingAnimation();
 }
