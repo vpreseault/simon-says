@@ -121,6 +121,20 @@ void lost() {
   currentScore = 0;
   currentInput = -1;
   previousInput = -1;
+
+  losingAnimation();
+}
+
+void losingAnimation() {
+  delay(sequenceDelay);
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(leds[i], HIGH);
+    tone(buzzerPin, tones[i]);
+    delay(50);
+    digitalWrite(leds[i], LOW);
+    noTone(buzzerPin);
+    delay(50);
+  }
 }
 
 void roundWin() {
