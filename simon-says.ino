@@ -2,9 +2,9 @@ int simonLeds[100];
 
 int randomLed;
 int leds[4] = { 2, 3, 4, 5 };
-int buttons[4] = { 6, 7, 8, 9 };
+int buttons[4] = { 17, 16, 15, 14 };
 int tones[4] = { 440, 523, 659, 784 };
-int buzzerPin = 10;
+int buzzerPin = 12;
 
 int currentScore = 0;
 int highscore = 0;
