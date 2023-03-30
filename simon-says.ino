@@ -38,6 +38,47 @@ void loop() {
 
   // wait for user input
   // either record entire sequence and check at the end OR check at every input
+  userInput();
+
+  delay(roundDelay);
+}
+
+void waitForNoInput() {
+  Serial.println("waitForNoInput \n");
+  bool noInput;
+  while (!noInput) {
+    noInput = true;
+    for (int j = 0; j < 4; j++) {
+      buttonsInput[j] = digitalRead(buttons[j]);
+      if (buttonsInput[j] == 0) {
+        noInput = false;
+      }
+    }
+  }
+}
+
+void simonSelect() {
+  Serial.println("simonSelect \n");
+  randomLed = random(4);
+  simonLeds[currentScore] = randomLed;  
+}
+
+void loopSimonSelections() {
+  Serial.println("loopSimonSelections");
+  for (int i = 0; i <= currentScore; i++) {
+    Serial.print(simonLeds[i]);
+    Serial.print(", ");
+
+    digitalWrite(leds[simonLeds[i]], HIGH);
+    delay(sequenceDelay);
+    digitalWrite(leds[simonLeds[i]], LOW);
+    delay(sequenceDelay);
+  }
+  Serial.println("\n");
+}
+
+void userInput() {
+  Serial.println("userInput \n");
   for (int i = 0; i <= currentScore; i++) {
     while (currentInput == -1 || currentInput == previousInput) {
       // loop through all buttons and check if they are pressed
@@ -60,60 +101,25 @@ void loop() {
 
     // verify user input
     if (currentInput != simonLeds[i]) {
-      Serial.println("Wrong");
       lost();
-      break;
+      return;
     }
-    // delay(250);
     previousInput = currentInput;
   }
   roundWin();
-
-  // determine if entire input was correct
-
-  Serial.println();
-  delay(roundDelay);
-}
-
-void waitForNoInput() {
-  bool noInput = true;
-  while (!noInput) {
-    noInput = true;
-    for (int j = 0; j < 4; j++) {
-      buttonsInput[j] = digitalRead(buttons[j]);
-      if (buttonsInput[j] == 0) {
-        noInput = false;
-      }
-    }
-  }
-}
-
-void simonSelect() {
-  randomLed = random(4);
-  simonLeds[currentScore] = randomLed;
-  for (int i = 0; i <= currentScore; i++) {
-    Serial.print(simonLeds[i]);
-    Serial.print(", ");
-    Serial.println();
-  }
-}
-
-void loopSimonSelections() {
-  for (int i = 0; i <= currentScore; i++) {
-    digitalWrite(leds[simonLeds[i]], HIGH);
-    delay(sequenceDelay);
-    digitalWrite(leds[simonLeds[i]], LOW);
-    delay(sequenceDelay);
-  }
 }
 
 void lost() {
+  Serial.println("lost \n");
   if (currentScore > highscore) {
     highscore = currentScore;
   }
   currentScore = 0;
+  currentInput = -1;
+  previousInput = -1;
 }
 
 void roundWin() {
+  Serial.println("roundWin \n");
   currentScore++;
 }
