@@ -29,6 +29,9 @@ void setup() {
     digitalWrite(leds[i], LOW);
     pinMode(buttons[i], INPUT_PULLUP);
   }
+
+  startupAnimation();
+  delay(roundDelay);
 }
 
 void loop() {
@@ -90,7 +93,7 @@ void waitForNoInput() {
 void simonSelect() {
   Serial.println("simonSelect \n");
   randomLed = random(4);
-  simonLeds[currentScore] = randomLed;  
+  simonLeds[currentScore] = randomLed;
 }
 
 void loopSimonSelections() {
@@ -112,21 +115,8 @@ void loopSimonSelections() {
 void lost() {
   Serial.println("lost \n");
   currentScore = 0;
-  
-  losingAnimation();
-}
 
-void losingAnimation() {
-  Serial.println("losingAnimation \n");
-  delay(sequenceDelay);
-  for (int i = 0; i < 4; i++) {
-    digitalWrite(leds[i], HIGH);
-    tone(buzzerPin, tones[i]);
-    delay(50);
-    digitalWrite(leds[i], LOW);
-    noTone(buzzerPin);
-    delay(50);
-  }
+  losingAnimation();
 }
 
 void roundWin() {
@@ -163,4 +153,38 @@ int arraySum(int array[], int length) {
     sum += array[i];
   }
   return sum;
+}
+
+// ---------- Animations ----------
+void startupAnimation() {
+  Serial.println("startupAnimation \n");
+  delay(sequenceDelay);
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(leds[i], HIGH);
+    tone(buzzerPin, tones[i]);
+    delay(50);
+    digitalWrite(leds[i], LOW);
+    noTone(buzzerPin);
+    delay(50);
+  }
+}
+
+void losingAnimation() {
+  Serial.println("losingAnimation \n");
+  delay(sequenceDelay);
+  for (int x = 0; x < 3; x++) {
+    tone(buzzerPin, tones[0]);
+    for (int i = 0; i < 4; i++) {
+      digitalWrite(leds[i], HIGH);
+    }
+
+    delay(50);
+
+    for (int i = 0; i < 4; i++) {
+      digitalWrite(leds[i], LOW);
+    }
+
+    noTone(buzzerPin);
+    delay(50);
+  }
 }
