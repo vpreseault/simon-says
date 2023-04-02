@@ -82,6 +82,14 @@ void userInput() {
   roundWin();
 }
 
+int arraySum(int array[], int length) {
+  int sum = 0;
+  for (int i = 0; i < length; i++) {
+    sum += array[i];
+  }
+  return sum;
+}
+
 void waitForNoInput() {
   while (arraySum(buttonsInput, 4) != 4) {
     for (int j = 0; j < 4; j++) {
@@ -89,6 +97,21 @@ void waitForNoInput() {
     }
   }
   delay(deadzoneDelay);
+}
+
+void resetOutputs() {
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(leds[i], LOW);
+  }
+  noTone(buzzerPin);
+}
+
+void updateLCDScores() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Score: " + String(currentScore));
+  lcd.setCursor(0, 1);
+  lcd.print("Best: " + String(highscore));
 }
 
 void simonSelect() {
@@ -119,29 +142,6 @@ void roundWin() {
   }
 
   updateLCDScores();
-}
-
-void updateLCDScores() {
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Score: " + String(currentScore));
-  lcd.setCursor(0, 1);
-  lcd.print("Best: " + String(highscore));
-}
-
-void resetOutputs() {
-  for (int i = 0; i < 4; i++) {
-    digitalWrite(leds[i], LOW);
-  }
-  noTone(buzzerPin);
-}
-
-int arraySum(int array[], int length) {
-  int sum = 0;
-  for (int i = 0; i < length; i++) {
-    sum += array[i];
-  }
-  return sum;
 }
 
 // ---------- Animations ----------
