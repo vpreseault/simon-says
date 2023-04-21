@@ -17,7 +17,7 @@ Simon Says is an game of short-term memory skill. The computer creates a sequenc
 - Arduino Uno​
 - Bread board​
 - LED​s
-- Resistors ($220\ohm \times 5$)​
+- Resistors (220 Ω x 5)​
 - Push button​s
 - Passive buzzer module​
 - LCD​
